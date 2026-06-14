@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node scripts/seedReviews.js"
+    "seed": "node scripts/seedReviews.js",
+    "init-admin": "node scripts/initAdmin.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^7.8.9",
     "nodemailer": "^6.9.7"
   },

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Hammad Mukhtar — Developer Portfolio
 
 A modern, dark-themed full-stack portfolio built with **React.js** (frontend) and **Node.js + Express** (backend).
@@ -168,3 +169,7 @@ Update the `proxy` field in `client/package.json` for production:
 ---
 
 > Built with ❤️ © 2025 Hammad Mukhtar
+=======
+# Portfolio
+My portfolio
+>>>>>>> 0aea09422458458750b425c749e5e8b6d5f8ea64

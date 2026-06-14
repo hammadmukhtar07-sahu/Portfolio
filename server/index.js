@@ -5,6 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const contactRoute = require('./routes/contact');
 const reviewsRoute = require('./routes/reviews');
+const authRoute = require('./routes/auth');
+const projectsRoute = require('./routes/projects');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,7 +31,7 @@ mongoose.connect(MONGODB_URI, {
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 app.use(express.json());
@@ -38,6 +40,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/contact', contactRoute);
 app.use('/api/reviews', reviewsRoute);
+app.use('/api/auth', authRoute);
+app.use('/api/projects', projectsRoute);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -9,7 +9,11 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Testimonials from './components/Testimonials';
 import ReviewModal from './components/ReviewModal';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import './index.css';
+import './styles/admin.css';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -64,6 +68,17 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </main>
       <Footer />
