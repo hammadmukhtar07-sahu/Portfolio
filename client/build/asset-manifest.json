@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ff3f19be.css",
+    "main.js": "/static/js/main.89027ac4.js",
+    "static/media/hammad-office.jpg": "/static/media/hammad-office.7561d28c7d78d0377291.jpg",
+    "static/media/hammad-avatar.jpg": "/static/media/hammad-avatar.fc6ff820143c89e01a48.jpg",
+    "index.html": "/index.html",
+    "main.ff3f19be.css.map": "/static/css/main.ff3f19be.css.map",
+    "main.89027ac4.js.map": "/static/js/main.89027ac4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ff3f19be.css",
+    "static/js/main.89027ac4.js"
+  ]
+}
