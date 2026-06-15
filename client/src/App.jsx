@@ -1,6 +1,6 @@
 // portfolio/client/src/App.jsx
 import React, { useEffect, useRef } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';

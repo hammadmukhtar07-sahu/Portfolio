@@ -5,13 +5,11 @@ import ReviewForm from './ReviewForm';
 
 const ReviewModal = () => {
   const [showModal, setShowModal] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     // Check if user has already dismissed this modal in this session
     const isDismissed = sessionStorage.getItem('reviewModalDismissed');
     if (isDismissed) {
-      setDismissed(true);
       return;
     }
 
