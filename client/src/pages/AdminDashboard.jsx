@@ -51,7 +51,7 @@ function AdminDashboard() {
   };
 
   const handleDeleteProject = async (id) => {
-    if (globalThis.confirm('Are you sure you want to delete this project?')) {
+    if (window.confirm('Are you sure you want to delete this project?')) {
       try {
         await projectService.deleteProject(id);
         setProjects(projects.filter(p => p._id !== id));
