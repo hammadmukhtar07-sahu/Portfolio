@@ -29,8 +29,25 @@ mongoose.connect(MONGODB_URI, {
   });
 
 // Middleware
+// Allow both local development and deployed frontend
+const allowedOrigins = [
+  'http://localhost:3000',           // Local development
+  process.env.CLIENT_URL,             // Environment variable (e.g., Vercel frontend)
+  'https://your-portfolio.vercel.app' // Fallback/backup
+].filter(Boolean); // Remove undefined values
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    // Allow localhost, any Vercel URL, or requests without origin (mobile apps, Postman)
+    if (!origin || 
+        origin.includes('localhost') || 
+        origin.includes('vercel.app') || 
+        allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));

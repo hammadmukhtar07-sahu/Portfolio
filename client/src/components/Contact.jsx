@@ -36,7 +36,8 @@ export default function Contact() {
     if (!form.name || !form.email || !form.message) return;
     setStatus('sending');
     try {
-      await axios.post('/api/contact', form);
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      await axios.post(`${API_URL}/contact`, form);
       setStatus('success');
       setForm({ name:'', email:'', message:'' });
     } catch (err) {
