@@ -80,10 +80,11 @@ const ReviewForm = ({ onSuccess, onClose = null }) => {
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* Name */}
       <div>
-        <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
+        <label htmlFor="name" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
           Your Name *
         </label>
         <input
+          id="name"
           type="text"
           name="name"
           value={formData.name}
@@ -98,10 +99,11 @@ const ReviewForm = ({ onSuccess, onClose = null }) => {
 
       {/* Email */}
       <div>
-        <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
+        <label htmlFor="email" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
           Email Address *
         </label>
         <input
+          id="email"
           type="email"
           name="email"
           value={formData.email}
@@ -115,10 +117,11 @@ const ReviewForm = ({ onSuccess, onClose = null }) => {
 
       {/* Company (Optional) */}
       <div>
-        <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
+        <label htmlFor="company" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
           Company or Country
         </label>
         <input
+          id="company"
           type="text"
           name="company"
           value={formData.company}
@@ -164,10 +167,11 @@ const ReviewForm = ({ onSuccess, onClose = null }) => {
 
       {/* Message */}
       <div>
-        <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
+        <label htmlFor="message" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: '500' }}>
           Your Review *
         </label>
         <textarea
+          id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}

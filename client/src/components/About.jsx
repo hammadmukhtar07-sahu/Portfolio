@@ -72,7 +72,7 @@ export default function About() {
         </motion.div>
 
         {/* Top: Bio + Photo side by side */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:'3rem', marginBottom:'4rem', alignItems:'center' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%, 280px),1fr))', gap:'3rem', marginBottom:'4rem', alignItems:'center' }}>
 
           {/* Office photo */}
           <motion.div
@@ -169,7 +169,7 @@ export default function About() {
           transition={{ duration:0.7, delay:0.3 }}
           style={{ background:'rgba(15,31,61,0.4)', backdropFilter:'blur(10px)', border:'1px solid rgba(6,182,212,0.1)', borderRadius:20, padding:'2.5rem' }}>
 
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'3rem' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%, 280px),1fr))', gap:'3rem' }}>
             {/* Skill bars */}
             <div>
               <h3 style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:'1.1rem', color:'var(--cyan)', marginBottom:'1.5rem' }}>Technical Proficiency</h3>

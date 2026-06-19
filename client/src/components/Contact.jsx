@@ -36,7 +36,7 @@ export default function Contact() {
     if (!form.name || !form.email || !form.message) return;
     setStatus('sending');
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.REACT_APP_API_URL;
       await axios.post(`${API_URL}/contact`, form);
       setStatus('success');
       setForm({ name:'', email:'', message:'' });
@@ -63,7 +63,7 @@ export default function Contact() {
           </p>
         </motion.div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:'3rem', alignItems:'start' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%, 280px),1fr))', gap:'3rem', alignItems:'start' }}>
 
           {/* Info panel */}
           <motion.div
@@ -148,16 +148,16 @@ export default function Contact() {
                     { name:'email',   label:'EMAIL ADDRESS',  type:'email', placeholder:'you@email.com' },
                   ].map(({ name, label, type, placeholder }) => (
                     <div key={name}>
-                      <label style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>{label}</label>
-                      <input type={type} name={name} value={form[name]} onChange={handleChange} required placeholder={placeholder}
+                      <label htmlFor={name} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>{label}</label>
+                      <input id={name} type={type} name={name} value={form[name]} onChange={handleChange} required placeholder={placeholder}
                         style={inputStyle}
                         onFocus={e => Object.assign(e.target.style, focusStyle)}
                         onBlur={e => Object.assign(e.target.style, blurStyle)} />
                     </div>
                   ))}
                   <div>
-                    <label style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>MESSAGE</label>
-                    <textarea name="message" value={form.message} onChange={handleChange} required rows={5}
+                    <label htmlFor="message" style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>MESSAGE</label>
+                    <textarea id="message" name="message" value={form.message} onChange={handleChange} required rows={5}
                       placeholder="Tell me about your project or just say hello..."
                       style={{ ...inputStyle, resize:'vertical', minHeight:130 }}
                       onFocus={e => Object.assign(e.target.style, focusStyle)}
