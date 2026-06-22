@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import avatarImg from '../assets/hammad-avatar.jpg';
 import officeImg from '../assets/hammad-office.jpg';
+import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
 
 const skills = [
   { name:'React.js',   level:92, icon:'⚛️' },
@@ -18,7 +19,6 @@ const skills = [
 
 const techBadges = ['React','Next.js','Node.js','Express','MongoDB','PostgreSQL','JavaScript','TypeScript','HTML5','CSS3','Tailwind CSS','Git','Docker','Redis','Socket.io','REST API','JWT','Axios'];
 
-import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
 
 const SOCIAL = [
   { label:'Facebook',  icon:<FaFacebook />, color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/' },
