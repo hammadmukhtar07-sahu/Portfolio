@@ -7,12 +7,14 @@ import { loadSlim } from '@tsparticles/slim';
 import { useNavigate } from 'react-router-dom';
 import avatarImg from '../assets/hammad-avatar.jpg';
 
+import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
+
 const SOCIAL = [
-  { label: 'Facebook',  emoji: '📘', color: '#1877f2', url: 'https://www.facebook.com/share/14g6xVWqpxY/' },
-  { label: 'LinkedIn',  emoji: '💼', color: '#0a66c2', url: 'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
-  { label: 'Instagram', emoji: '📸', color: '#e1306c', url: 'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
-  { label: 'WhatsApp',  emoji: '💬', color: '#22c55e', url: 'https://wa.me/923336278367' },
-  { label: 'GitHub',    emoji: '🐙', color: '#f1f5f9', url: 'https://github.com' },
+  { label: 'Facebook',  icon: <FaFacebook />, color: '#1877f2', url: 'https://www.facebook.com/share/14g6xVWqpxY/' },
+  { label: 'LinkedIn',  icon: <FaLinkedin />, color: '#0a66c2', url: 'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
+  { label: 'Instagram', icon: <FaInstagram />, color: '#e1306c', url: 'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
+  { label: 'WhatsApp',  icon: <FaWhatsapp />, color: '#22c55e', url: 'https://wa.me/923336278367' },
+  { label: 'GitHub',    icon: <FaGithub />, color: '#f1f5f9', url: 'https://github.com' },
 ];
 
 export default function Hero() {
@@ -20,7 +22,7 @@ export default function Hero() {
   const particlesInit = useCallback(async (engine) => { await loadSlim(engine); }, []);
 
   return (
-    <section id="hero" style={{ minHeight:'100vh', display:'flex', alignItems:'center', position:'relative', overflow:'hidden', padding:'0 2rem' }}>
+    <section id="hero" style={{ minHeight:'100vh', display:'flex', alignItems:'center', position:'relative', overflow:'hidden', padding:'0 clamp(1rem, 5vw, 2rem)' }}>
       <Particles id="tsparticles" init={particlesInit}
         style={{ position:'absolute', inset:0, zIndex:0 }}
         options={{
@@ -93,14 +95,14 @@ export default function Hero() {
           {/* Social icons */}
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.6 }}
             style={{ display:'flex', gap:'10px', flexWrap:'wrap' }}>
-            {SOCIAL.map(({ label, emoji, color, url }) => (
+            {SOCIAL.map(({ label, icon, color, url }) => (
               <motion.a key={label} href={url} target="_blank" rel="noopener noreferrer"
                 whileHover={{ y:-4, scale:1.12 }} whileTap={{ scale:0.95 }}
                 title={label}
                 style={{ width:42, height:42, borderRadius:'10px', background:'rgba(15,31,61,0.6)', border:`1px solid ${color}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.1rem', textDecoration:'none', transition:'border-color 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = color}
                 onMouseLeave={e => e.currentTarget.style.borderColor = `${color}30`}>
-                {emoji}
+                {icon}
               </motion.a>
             ))}
           </motion.div>

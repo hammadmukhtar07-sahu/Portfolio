@@ -3,6 +3,24 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 
+// Create transporter globally to reuse connection pool
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// Verify connection configuration
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('SMTP Connection Error:', error.message);
+  } else {
+    console.log('✅ SMTP Server is ready to take our messages');
+  }
+});
+
 // POST /api/contact — send email via Nodemailer
 router.post('/', async (req, res) => {
   const { name, email, message } = req.body;
@@ -13,14 +31,6 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Create transporter (Gmail example; swap host/port for other providers)
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Use an App Password, not your real password
-      },
-    });
 
     // Mail options
     const mailOptions = {

@@ -110,7 +110,7 @@ export default function Testimonials() {
         overflow: 'hidden' // Important to prevent horizontal scrollbar on body
       }}
     >
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 2rem' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 clamp(1rem, 5vw, 2rem)' }}>
         {/* Header */}
         <motion.div
           ref={ref}
@@ -295,7 +295,7 @@ export default function Testimonials() {
 
       {/* Empty state (Fallback just in case) */}
       {!loading && reviews.length === 0 && (
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 2rem' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 clamp(1rem, 5vw, 2rem)' }}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -333,7 +333,7 @@ export default function Testimonials() {
         </div>
       )}
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 2rem' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 clamp(1rem, 5vw, 2rem)' }}>
         {/* CTA Section with Form */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}

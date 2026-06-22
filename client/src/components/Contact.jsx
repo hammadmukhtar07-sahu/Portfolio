@@ -3,12 +3,14 @@ import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import axios from 'axios';
 
+import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
+
 const SOCIAL = [
-  { label:'Facebook',  icon:'📘', color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/',                                              hint:'Follow on Facebook' },
-  { label:'LinkedIn',  icon:'💼', color:'#0a66c2', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba',                                     hint:'Connect on LinkedIn' },
-  { label:'Instagram', icon:'📸', color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==',                     hint:'Follow on Instagram' },
-  { label:'WhatsApp',  icon:'💬', color:'#22c55e', url:'https://wa.me/923336278367?text=Hi%20Hammad%2C%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20connect!', hint:'Chat on WhatsApp' },
-  { label:'GitHub',    icon:'🐙', color:'#f1f5f9', url:'https://github.com',                                                                        hint:'View on GitHub' },
+  { label:'Facebook',  icon:<FaFacebook />, color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/',                                              hint:'Follow on Facebook' },
+  { label:'LinkedIn',  icon:<FaLinkedin />, color:'#0a66c2', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba',                                     hint:'Connect on LinkedIn' },
+  { label:'Instagram', icon:<FaInstagram />, color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==',                     hint:'Follow on Instagram' },
+  { label:'WhatsApp',  icon:<FaWhatsapp />, color:'#22c55e', url:'https://wa.me/923336278367?text=Hi%20Hammad%2C%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20connect!', hint:'Chat on WhatsApp' },
+  { label:'GitHub',    icon:<FaGithub />, color:'#f1f5f9', url:'https://github.com',                                                                        hint:'View on GitHub' },
 ];
 
 const inputStyle = {
@@ -35,19 +37,29 @@ export default function Contact() {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
     setStatus('sending');
+    setErrMsg('');
     try {
-      const API_URL = process.env.REACT_APP_API_URL;
-      await axios.post(`${API_URL}/contact`, form);
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      await axios.post(`${API_URL}/contact`, form, {
+        timeout: 15000,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       setStatus('success');
       setForm({ name:'', email:'', message:'' });
     } catch (err) {
       setStatus('error');
-      setErrMsg(err.response?.data?.error || 'Something went wrong. Please try again.');
+      if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        setErrMsg('The request took too long. Please try again.');
+      } else {
+        setErrMsg(err.response?.data?.error || 'Something went wrong. Please check your connection and try again.');
+      }
     }
   };
 
   return (
-    <section id="contact" style={{ minHeight:'100vh', padding:'clamp(6rem,10vw,9rem) 2rem 4rem' }}>
+    <section id="contact" style={{ minHeight:'100vh', padding:'clamp(6rem,10vw,9rem) clamp(1rem, 5vw, 2rem)' }}>
       <div style={{ maxWidth:1100, margin:'0 auto' }}>
 
         {/* Header */}

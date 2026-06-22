@@ -198,7 +198,7 @@ export default function Projects() {
 
   return (
     <section id="projects" style={{
-      padding: 'clamp(5rem, 10vw, 9rem) 2rem',
+      padding: 'clamp(5rem, 10vw, 9rem) clamp(1rem, 5vw, 2rem)',
       background: 'linear-gradient(180deg, transparent 0%, rgba(6,182,212,0.02) 50%, transparent 100%)',
     }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>

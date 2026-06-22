@@ -84,15 +84,16 @@ const ReviewModal = () => {
               background: 'rgba(10, 22, 40, 0.95)',
               border: '1px solid rgba(6, 182, 212, 0.25)',
               borderRadius: '20px',
-              padding: '40px 32px 32px 32px',
-              maxWidth: '550px',
-              width: '90vw',
-              maxHeight: '90vh',
-              overflow: 'auto',
+              padding: 'clamp(20px, 5vw, 40px) clamp(16px, 4vw, 32px)',
+              width: 'min(90vw, 550px)',
+              maxHeight: '85vh',
+              overflowX: 'hidden',
+              overflowY: 'auto',
               backdropFilter: 'blur(10px)',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(6, 182, 212, 0.1)',
               zIndex: 100000,
-              cursor: 'default'
+              cursor: 'default',
+              boxSizing: 'border-box'
             }}
           >
             {/* Close button */}
@@ -102,8 +103,8 @@ const ReviewModal = () => {
               onClick={handleClose}
               style={{
                 position: 'absolute',
-                top: '16px',
-                right: '16px',
+                top: 'clamp(8px, 2vw, 16px)',
+                right: 'clamp(8px, 2vw, 16px)',
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',

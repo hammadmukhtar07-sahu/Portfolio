@@ -37,17 +37,7 @@ const allowedOrigins = [
 ].filter(Boolean); // Remove undefined values
 
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow localhost, any Vercel URL, or requests without origin (mobile apps, Postman)
-    if (!origin || 
-        origin.includes('localhost') || 
-        origin.includes('vercel.app') || 
-        allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));

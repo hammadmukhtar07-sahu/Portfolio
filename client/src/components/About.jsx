@@ -18,12 +18,14 @@ const skills = [
 
 const techBadges = ['React','Next.js','Node.js','Express','MongoDB','PostgreSQL','JavaScript','TypeScript','HTML5','CSS3','Tailwind CSS','Git','Docker','Redis','Socket.io','REST API','JWT','Axios'];
 
+import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
+
 const SOCIAL = [
-  { label:'Facebook',  icon:'📘', color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/' },
-  { label:'LinkedIn',  icon:'💼', color:'#0a66c2', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
-  { label:'Instagram', icon:'📸', color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
-  { label:'WhatsApp',  icon:'💬', color:'#22c55e', url:'https://wa.me/923336278367' },
-  { label:'GitHub',    icon:'🐙', color:'#f1f5f9', url:'https://github.com' },
+  { label:'Facebook',  icon:<FaFacebook />, color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/' },
+  { label:'LinkedIn',  icon:<FaLinkedin />, color:'#0a66c2', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
+  { label:'Instagram', icon:<FaInstagram />, color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
+  { label:'WhatsApp',  icon:<FaWhatsapp />, color:'#22c55e', url:'https://wa.me/923336278367' },
+  { label:'GitHub',    icon:<FaGithub />, color:'#f1f5f9', url:'https://github.com' },
 ];
 
 function SkillBar({ name, level, icon, index }) {
@@ -58,7 +60,7 @@ export default function About() {
   const navigate = useNavigate();
 
   return (
-    <section id="about" style={{ minHeight:'100vh', padding:'clamp(6rem,10vw,9rem) 2rem 4rem' }}>
+    <section id="about" style={{ minHeight:'100vh', padding:'clamp(6rem,10vw,9rem) clamp(1rem, 5vw, 2rem)' }}>
       <div style={{ maxWidth:1100, margin:'0 auto' }}>
 
         {/* Header */}

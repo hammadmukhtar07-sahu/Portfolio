@@ -3,12 +3,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react-icons/fa';
+
 const SOCIAL = [
-  { label:'Facebook',  icon:'📘', url:'https://www.facebook.com/share/14g6xVWqpxY/' },
-  { label:'LinkedIn',  icon:'💼', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
-  { label:'Instagram', icon:'📸', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
-  { label:'WhatsApp',  icon:'💬', url:'https://wa.me/923336278367' },
-  { label:'GitHub',    icon:'🐙', url:'https://github.com' },
+  { label:'Facebook',  icon:<FaFacebook />, url:'https://www.facebook.com/share/14g6xVWqpxY/' },
+  { label:'LinkedIn',  icon:<FaLinkedin />, url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba' },
+  { label:'Instagram', icon:<FaInstagram />, url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==' },
+  { label:'WhatsApp',  icon:<FaWhatsapp />, url:'https://wa.me/923336278367' },
+  { label:'GitHub',    icon:<FaGithub />, url:'https://github.com' },
 ];
 
 const NAV = [
