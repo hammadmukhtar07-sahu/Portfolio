@@ -41,7 +41,7 @@ export default function Contact() {
     try {
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
       await axios.post(`${API_URL}/contact`, form, {
-        timeout: 15000,
+        timeout: 10000,
         headers: {
           'Content-Type': 'application/json'
         }
@@ -51,9 +51,9 @@ export default function Contact() {
     } catch (err) {
       setStatus('error');
       if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
-        setErrMsg('The request took too long. Please try again.');
+        setErrMsg('Request timed out. Please check your connection or email me directly.');
       } else {
-        setErrMsg(err.response?.data?.error || 'Something went wrong. Please check your connection and try again.');
+        setErrMsg(err.response?.data?.error || 'Failed to send message. Please try again.');
       }
     }
   };

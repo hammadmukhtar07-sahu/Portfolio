@@ -1,27 +1,11 @@
 // portfolio/server/routes/contact.js
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Create transporter globally to reuse connection pool
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Verify connection configuration
-transporter.verify(function(error, success) {
-  if (error) {
-    console.error('SMTP Connection Error:', error.message);
-  } else {
-    console.log('✅ SMTP Server is ready to take our messages');
-  }
-});
-
-// POST /api/contact — send email via Nodemailer
+// POST /api/contact — send email via Resend
 router.post('/', async (req, res) => {
   const { name, email, message } = req.body;
 
@@ -31,12 +15,10 @@ router.post('/', async (req, res) => {
   }
 
   try {
-
-    // Mail options
-    const mailOptions = {
-      from: `"${name}" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_TO || process.env.EMAIL_USER,
-      replyTo: email,
+    const { data, error } = await resend.emails.send({
+      from: 'onboarding@resend.dev', // Default Resend test sender
+      to: 'hammadmukhtar128@gmail.com', // Target email requested by user
+      reply_to: email,
       subject: `📬 New Portfolio Contact from ${name}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:24px;background:#0a0f1e;border-radius:12px;color:#e2e8f0;">
@@ -51,14 +33,19 @@ router.post('/', async (req, res) => {
           <p style="margin-top:16px;color:#475569;font-size:13px;">Sent from hammadmukhtar.dev portfolio contact form</p>
         </div>
       `,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('Resend API Error:', error);
+      return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+    }
+
+    console.log('✅ Email sent successfully via Resend. ID:', data?.id);
     res.status(200).json({ success: true, message: 'Email sent successfully!' });
 
-  } catch (error) {
-    console.error('Email error:', error.message);
-    res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+  } catch (err) {
+    console.error('Unexpected error in contact route:', err.message);
+    res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
   }
 });
 
