@@ -1,5 +1,7 @@
 // portfolio/server/index.js
-require('dotenv').config({ path: '../.env' });
+// NOTE: On Railway, env vars are injected directly — dotenv is only for local dev.
+// The path below intentionally loads from the repo root .env when running locally.
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -12,7 +14,25 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio';
 
-// MongoDB Connection
+// ─── Startup environment validation ─────────────────────────────────────────
+console.log('🚀 Portfolio backend starting...');
+console.log('📦 Node version:', process.version);
+console.log('🌍 NODE_ENV:', process.env.NODE_ENV || 'development');
+console.log('🔑 RESEND_API_KEY loaded:', !!process.env.RESEND_API_KEY);
+console.log('📧 EMAIL_TO loaded:', process.env.EMAIL_TO || '(not set — will use hardcoded fallback)');
+console.log('🗄️  MONGODB_URI loaded:', !!process.env.MONGODB_URI);
+console.log('🔐 JWT_SECRET loaded:', !!process.env.JWT_SECRET);
+console.log('🌐 CLIENT_URL:', process.env.CLIENT_URL || '(not set)');
+
+if (!process.env.RESEND_API_KEY) {
+  console.error('⚠️  WARNING: RESEND_API_KEY is not set. Contact form email sending will fail!');
+  console.error('   → Set RESEND_API_KEY in Railway environment variables.');
+}
+if (!process.env.EMAIL_TO) {
+  console.warn('⚠️  WARNING: EMAIL_TO is not set. Using hardcoded fallback: hammadmukhtar128@gmail.com');
+}
+
+// ─── MongoDB Connection ──────────────────────────────────────────────────────
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -23,19 +43,11 @@ mongoose.connect(MONGODB_URI, {
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
     console.error('📝 Make sure:');
-    console.error('   1. MongoDB is running (mongod)');
-    console.error('   2. Or update MONGODB_URI in .env to MongoDB Atlas');
-    console.error('   3. Connection string: mongodb+srv://username:password@cluster.mongodb.net/portfolio');
+    console.error('   1. MONGODB_URI is set correctly in Railway environment variables');
+    console.error('   2. MongoDB Atlas allows connections from Railway IPs (allow all: 0.0.0.0/0)');
   });
 
-// Middleware
-// Allow both local development and deployed frontend
-const allowedOrigins = [
-  'http://localhost:3000',           // Local development
-  process.env.CLIENT_URL,             // Environment variable (e.g., Vercel frontend)
-  'https://your-portfolio.vercel.app' // Fallback/backup
-].filter(Boolean); // Remove undefined values
-
+// ─── CORS ────────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -44,18 +56,29 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// ─── Routes ──────────────────────────────────────────────────────────────────
 app.use('/api/contact', contactRoute);
 app.use('/api/reviews', reviewsRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/projects', projectsRoute);
 
-// Health check
+// ─── Health check ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Portfolio server is running' });
+  res.json({
+    status: 'OK',
+    message: 'Portfolio server is running',
+    timestamp: new Date().toISOString(),
+    env: {
+      resendConfigured: !!process.env.RESEND_API_KEY,
+      emailTo: process.env.EMAIL_TO || 'hammadmukhtar128@gmail.com (fallback)',
+      mongoConnected: mongoose.connection.readyState === 1,
+    }
+  });
 });
 
-// Start server
+// ─── Start server ────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🩺 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🧪 Contact test: http://localhost:${PORT}/api/contact/test`);
 });

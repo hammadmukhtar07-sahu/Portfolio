@@ -1,5 +1,5 @@
 // portfolio/client/src/components/Contact.jsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import axios from 'axios';
 
@@ -8,10 +8,15 @@ import { FaFacebook, FaLinkedin, FaInstagram, FaWhatsapp, FaGithub } from 'react
 const SOCIAL = [
   { label:'Facebook',  icon:<FaFacebook />, color:'#1877f2', url:'https://www.facebook.com/share/14g6xVWqpxY/',                                              hint:'Follow on Facebook' },
   { label:'LinkedIn',  icon:<FaLinkedin />, color:'#0a66c2', url:'https://www.linkedin.com/in/hammad-mukhtar-4812a23ba',                                     hint:'Connect on LinkedIn' },
-  { label:'Instagram', icon:<FaInstagram />, color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==',                     hint:'Follow on Instagram' },
+  { label:'Instagram', icon:<FaInstagram />, color:'#e1306c', url:'https://www.instagram.com/hammadmukhtar128?igsh=MTVodjlya2w0MDI0Yw==',                    hint:'Follow on Instagram' },
   { label:'WhatsApp',  icon:<FaWhatsapp />, color:'#22c55e', url:'https://wa.me/923336278367?text=Hi%20Hammad%2C%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20connect!', hint:'Chat on WhatsApp' },
-  { label:'GitHub',    icon:<FaGithub />, color:'#f1f5f9', url:'https://github.com',                                                                        hint:'View on GitHub' },
+  { label:'GitHub',    icon:<FaGithub />, color:'#f1f5f9', url:'https://github.com/hammadmukhtar07',                                                         hint:'View on GitHub' },
 ];
+
+// ─── Production API URL — never falls back to localhost in production ────────
+const API_BASE =
+  process.env.REACT_APP_API_URL ||
+  'https://hammad-portfolio-backend.up.railway.app/api';
 
 const inputStyle = {
   width:'100%', padding:'13px 16px',
@@ -28,32 +33,47 @@ export default function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once:true, margin:'-80px' });
   const [form, setForm] = useState({ name:'', email:'', message:'' });
+  // status: 'idle' | 'sending' | 'success' | 'error'
   const [status, setStatus] = useState('idle');
   const [errMsg, setErrMsg] = useState('');
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = useCallback(
+    e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value })),
+    []
+  );
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
+
+    // Prevent duplicate submissions
+    if (status === 'sending') return;
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) return;
+
     setStatus('sending');
     setErrMsg('');
+
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-      await axios.post(`${API_URL}/contact`, form, {
-        timeout: 10000,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      await axios.post(`${API_BASE}/contact`, form, {
+        timeout: 15000,
+        headers: { 'Content-Type': 'application/json' },
       });
+
       setStatus('success');
       setForm({ name:'', email:'', message:'' });
     } catch (err) {
       setStatus('error');
-      if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
-        setErrMsg('Request timed out. Please check your connection or email me directly.');
+
+      if (err.code === 'ECONNABORTED' || (err.message && err.message.includes('timeout'))) {
+        setErrMsg('Request timed out. Please check your connection or email me directly at hammadmukhtar128@gmail.com');
+      } else if (err.response) {
+        // Server responded with an error — show the exact backend message
+        const serverMsg = err.response.data?.error || err.response.data?.message;
+        setErrMsg(serverMsg || `Server error (${err.response.status}). Please try again.`);
+      } else if (err.request) {
+        // Request made but no response — network issue
+        setErrMsg('Could not reach the server. Please check your internet connection or email me directly.');
       } else {
-        setErrMsg(err.response?.data?.error || 'Failed to send message. Please try again.');
+        setErrMsg('An unexpected error occurred. Please try again or email me directly.');
       }
     }
   };
@@ -97,8 +117,8 @@ export default function Contact() {
               ].map(({ icon, label, value, href }) => (
                 <a key={label} href={href}
                   style={{ display:'flex', alignItems:'center', gap:14, padding:'14px 18px', background:'rgba(15,31,61,0.5)', border:'1px solid rgba(6,182,212,0.12)', borderRadius:10, textDecoration:'none', transition:'border-color 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor='rgba(6,182,212,0.4)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor='rgba(6,182,212,0.12)'}>
+                  onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(6,182,212,0.4)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(6,182,212,0.12)'; }}>
                   <div style={{ width:42, height:42, borderRadius:9, background:'var(--cyan-dim)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.2rem', flexShrink:0 }}>{icon}</div>
                   <div>
                     <div style={{ fontFamily:'var(--font-mono)', fontSize:'0.62rem', color:'var(--text-muted)', letterSpacing:'0.1em' }}>{label}</div>
@@ -148,46 +168,81 @@ export default function Contact() {
                   <p style={{ color:'var(--text-secondary)', fontSize:'0.9rem', marginBottom:'1.5rem' }}>
                     Thanks for reaching out. I'll get back to you within 24 hours.
                   </p>
-                  <button onClick={() => setStatus('idle')}
+                  <button
+                    id="contact-send-another-btn"
+                    onClick={() => setStatus('idle')}
                     style={{ background:'none', border:'1px solid rgba(6,182,212,0.3)', color:'var(--cyan)', borderRadius:8, padding:'8px 20px', fontFamily:'var(--font-body)', fontSize:'0.85rem', cursor:'pointer' }}>
                     Send another
                   </button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:'1.2rem' }}>
+                <form id="contact-form" onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:'1.2rem' }}>
                   {[
-                    { name:'name',    label:'YOUR NAME',      type:'text',  placeholder:'Hammad Mukhtar' },
-                    { name:'email',   label:'EMAIL ADDRESS',  type:'email', placeholder:'you@email.com' },
+                    { name:'name',  label:'YOUR NAME',     type:'text',  placeholder:'Hammad Mukhtar' },
+                    { name:'email', label:'EMAIL ADDRESS', type:'email', placeholder:'you@email.com' },
                   ].map(({ name, label, type, placeholder }) => (
                     <div key={name}>
-                      <label htmlFor={name} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>{label}</label>
-                      <input id={name} type={type} name={name} value={form[name]} onChange={handleChange} required placeholder={placeholder}
-                        style={inputStyle}
+                      <label htmlFor={`contact-${name}`} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>{label}</label>
+                      <input
+                        id={`contact-${name}`}
+                        type={type}
+                        name={name}
+                        value={form[name]}
+                        onChange={handleChange}
+                        required
+                        placeholder={placeholder}
+                        disabled={status === 'sending'}
+                        style={{ ...inputStyle, opacity: status === 'sending' ? 0.7 : 1 }}
                         onFocus={e => Object.assign(e.target.style, focusStyle)}
-                        onBlur={e => Object.assign(e.target.style, blurStyle)} />
+                        onBlur={e => Object.assign(e.target.style, blurStyle)}
+                      />
                     </div>
                   ))}
                   <div>
-                    <label htmlFor="message" style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>MESSAGE</label>
-                    <textarea id="message" name="message" value={form.message} onChange={handleChange} required rows={5}
+                    <label htmlFor="contact-message" style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:6 }}>MESSAGE</label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      value={form.message}
+                      onChange={handleChange}
+                      required
+                      rows={5}
                       placeholder="Tell me about your project or just say hello..."
-                      style={{ ...inputStyle, resize:'vertical', minHeight:130 }}
+                      disabled={status === 'sending'}
+                      style={{ ...inputStyle, resize:'vertical', minHeight:130, opacity: status === 'sending' ? 0.7 : 1 }}
                       onFocus={e => Object.assign(e.target.style, focusStyle)}
-                      onBlur={e => Object.assign(e.target.style, blurStyle)} />
+                      onBlur={e => Object.assign(e.target.style, blurStyle)}
+                    />
                   </div>
 
                   {status === 'error' && (
-                    <div style={{ padding:'10px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.3)', borderRadius:8, color:'#f87171', fontSize:'0.85rem' }}>
+                    <motion.div
+                      initial={{ opacity:0, y:-6 }} animate={{ opacity:1, y:0 }}
+                      style={{ padding:'10px 14px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.3)', borderRadius:8, color:'#f87171', fontSize:'0.85rem' }}>
                       ⚠️ {errMsg}
-                    </div>
+                    </motion.div>
                   )}
 
-                  <motion.button type="submit" disabled={status==='sending'}
-                    whileHover={{ scale:1.02, boxShadow:'0 0 30px rgba(6,182,212,0.3)' }}
-                    whileTap={{ scale:0.98 }}
-                    style={{ background: status==='sending' ? 'rgba(6,182,212,0.3)' : 'var(--gradient)', border:'none', color:'#fff', fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.95rem', padding:13, borderRadius:10, cursor: status==='sending' ? 'not-allowed' : 'none', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+                  <motion.button
+                    id="contact-submit-btn"
+                    type="submit"
+                    disabled={status === 'sending'}
+                    whileHover={status !== 'sending' ? { scale:1.02, boxShadow:'0 0 30px rgba(6,182,212,0.3)' } : {}}
+                    whileTap={status !== 'sending' ? { scale:0.98 } : {}}
+                    style={{
+                      background: status === 'sending' ? 'rgba(6,182,212,0.3)' : 'var(--gradient)',
+                      border:'none', color:'#fff',
+                      fontFamily:'var(--font-body)', fontWeight:600, fontSize:'0.95rem',
+                      padding:13, borderRadius:10,
+                      cursor: status === 'sending' ? 'not-allowed' : 'pointer',
+                      display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+                      transition:'background 0.2s',
+                    }}>
                     {status === 'sending' ? (
-                      <><div style={{ width:16, height:16, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />Sending...</>
+                      <>
+                        <div style={{ width:16, height:16, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
+                        Sending...
+                      </>
                     ) : (
                       <>📨 Send Message</>
                     )}
